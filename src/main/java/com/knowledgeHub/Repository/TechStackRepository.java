@@ -12,4 +12,5 @@ public interface TechStackRepository extends JpaRepository<TechStack, Long> {
 	long deleteByTechstackName(String techStackName);
 	boolean existsByTechstackName(String techStackName);
 	Optional<TechStack> findByTechstackNameIgnoreCase(String techStackName);
+	//Optional<TechStack> findByTechstackName(String oldName);
 }

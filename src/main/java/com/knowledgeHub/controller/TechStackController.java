@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,30 +34,18 @@ public class TechStackController {
 		return service.saveAll(dtoList);
 	}
 
-
-	
 	@PostMapping("/saveStack")
 	public ResponseEntity<?> create(@RequestBody TechStackDTO dto) {
 
-	    ResponseEntity<?> saved = service.save(dto);
+		ResponseEntity<?> saved = service.save(dto);
 
-	    if (saved.getStatusCode().is2xxSuccessful()) {
-	        return ResponseEntity.ok(
-	                Map.of(
-	                        "status", "success",
-	                        "message", "Saved"
-	                )
-	        );
-	    } else {
-	        return ResponseEntity.status(HttpStatus.CONFLICT).body(
-	                Map.of(
-	                        "status", "duplicate",
-	                        "message", "Already exists"
-	                )
-	        );
-	    }
+		if (saved.getStatusCode().is2xxSuccessful()) {
+			return ResponseEntity.ok(Map.of("status", "success", "message", "Saved"));
+		} else {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(Map.of("status", "duplicate", "message", "Already exists"));
+		}
 	}
-
 
 	@GetMapping("/getAll")
 	public List<TechStack> getAll() {
@@ -67,10 +56,23 @@ public class TechStackController {
 	public ResponseEntity<?> deleteByName(@PathVariable String name) {
 		return service.deleteByName(name);
 	}
-	
+
 	@GetMapping("/stats")
 	public ResponseEntity<DashboardStatsDTO> getStats() {
-	    return ResponseEntity.ok(service.getStats());
+		return ResponseEntity.ok(service.getStats());
 	}
-}
 
+	// ✅ UPDATE API
+	@PutMapping("/update")
+	public ResponseEntity<?> updateTechStack(@RequestBody Map<String, String> request) {
+
+		String oldName = request.get("oldName");
+		String newName = request.get("newName");
+
+		service.updateTechStack(oldName, newName);
+
+		return ResponseEntity.ok(Map.of("message", "Updated successfully"));
+
+	}
+
+}
